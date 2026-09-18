@@ -2,6 +2,7 @@
 target/
 build/
 dist/
+*.class
 
 # ── Maven wrapper jar ─────────────────────────────────────────────────────────
 .mvn/wrapper/maven-wrapper.jar
