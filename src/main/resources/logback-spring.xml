@@ -1,0 +1,76 @@
+<configuration>
+
+    <!-- Keep existing Spring Boot default console + main log file -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+
+    <!-- Dedicated match results file -->
+    <appender name="MATCH_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/match-results.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Dedicated logger — only ScoringConsumer match output -->
+    <logger name="MATCH_RESULTS" level="INFO" additivity="false">
+        <appender-ref ref="MATCH_FILE"/>
+    </logger>
+    
+    
+    <appender name="MISSED_ALERTS_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/missed-alerts.log</file>
+        <append>true</append>  <!-- true — accumulate across runs, never lose a record -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %msg%n</pattern>  <!-- timestamp important here -->
+        </encoder>
+    </appender>
+
+    <logger name="MISSED_ALERTS" level="INFO" additivity="false">
+        <appender-ref ref="MISSED_ALERTS_FILE"/>
+    </logger>
+    
+    <appender name="METRICS_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/metrics.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="METRICS" level="INFO" additivity="false">
+        <appender-ref ref="METRICS_FILE"/>
+    </logger>
+
+    <!-- Structured JSON exception events — one object per line, UTC timestamps -->
+    <appender name="EXCEPTIONS_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/screening-exceptions.json</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/screening-exceptions.%d{yyyy-MM-dd}.json</fileNamePattern>
+            <maxHistory>1095</maxHistory>      <!-- 3 years — FATF Rec. 11 minimum -->
+            <totalSizeCap>10GB</totalSizeCap>  <!-- safety cap on total disk usage -->
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <logLevel/>
+                <logstashMarkers/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <logger name="SCREENING_EXCEPTIONS" level="INFO" additivity="false">
+        <appender-ref ref="EXCEPTIONS_JSON"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>

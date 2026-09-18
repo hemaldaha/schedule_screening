@@ -1,0 +1,108 @@
+## YAML Template.
+---
+debug: true
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # Primary DB (schedule-screening)
+    postgres:
+      jdbc-url: jdbc:postgresql://localhost:5432/schedule-screening
+      username: postgres
+      password: ${DB_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      pool-name: pgsqlPool
+
+    # Secondary DB (oracle_db simulation)
+    oracle:
+      jdbc-url: jdbc:postgresql://localhost:5432/schedule-screening
+      username: postgres
+      password: ${DB_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      pool-name: oraclePool
+      maximum-pool-size: 20 # Higher pool size for Virtual Thread processing
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    
+  threads:
+    virtual:
+      enabled: true
+
+logging:
+  file:
+    name: logs/screening.log
+  logback:
+    rollingpolicy:
+      max-file-size: 500MB
+  level:
+    com.kpmg.aml.screening: INFO
+    com.kpmg.aml.screening.util.SriLankanNicUtil: WARN
+    org:
+      hibernate:
+        SQL: ERROR
+        orm:
+          jdbc:
+            bind: ERROR
+        type:
+          descriptor:
+            sql: ERROR
+
+
+application:
+  config:
+    solr:      
+      zk-hosts: "localhost:2181,localhost:2182,localhost:2183"
+      connection-timeout: 10000
+      socket-timeout: 20000
+      # defult-collection: "fiu_individual_core"  <-- check this
+      # List them here so you can inject them into your services
+      collections:
+        individual: "fiu_individual_core"
+        org: "fiu_org_core"
+        watch: "local_watch_core"
+        un: "un_consolidated_core"
+        lxnx: "lxnx_entities_core"
+    screening:
+      chunk-buffer-capacity: 10
+      scoring-buffer-capacity: 100
+      alert-buffer-capacity: 100
+      alert-batch-size: 50
+      alert-batch-timeout-ms: 5000
+      batch-size: 1000
+      score-threshold: 86.0        # global default — applies to any core not listed below
+      score-thresholds:            # per-core overrides (Solr core name as key)
+        fiu_individual_core: 86.0  # raised from 83.0 — AI review showed all FIU FPs clustered at 83-85%
+        fiu_org_core: 85.0         # raised from 83.0
+        local_watch_core: 86.0     # raised from 83.0 — AI review: all LOCAL FPs at exactly 85%
+        un_consolidated_core: 88.0 # raised from 83.0 — AI review: UN FPs at 83-87%
+        lxnx_entities_core: 94.0   # raised from 88.0 — all AI-confirmed HIGH alerts were at 94%+
+      max-concurrent-chunks: 5
+      high-entity-count-trigger: 3      # Pattern B: lowered from 4 — catches common names earlier
+      high-entity-count-threshold: 92.0 # Pattern B: elevated threshold for high-variant-count entities
+      lxnx-common-name-cap: 4           # Pattern D: suppress LXNX for short names (≤2 tokens) matching more than this many distinct LXNX entities
+      metrics-interval-ms: 10000
+      retention-years: 7
+      #archival-cron: "0 0 2 1 * *"   # 02:00 on the 1st of every month
+      archival-cron: "0 0 2 1 * *"
+    # Python match rating configs      
+    match-rate:
+      endpoints:
+        - http://localhost:5000
+        - http://localhost:5001
+        - http://localhost:5002
+      connect-timeout: 3000
+      read-timeout: 10000
+      health-check-interval: 15000
+
+      
+      
+      
+      # solr-alqaida-url: http://localhost:8983/solr/alqaida_test
+      # solr-taliban-url: http://localhost:8983/solr/taliban_test
+      # olr-refi-full-url: http://localhost:8983/solr/refinitiv_full
+      # solr-refi-upd-url: http://localhost:8983/solr/refinitiv_upd

@@ -1,0 +1,89 @@
+# ── Build output ──────────────────────────────────────────────────────────────
+target/
+build/
+dist/
+
+# ── Maven wrapper jar ─────────────────────────────────────────────────────────
+.mvn/wrapper/maven-wrapper.jar
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+nohup.out
+
+# ── Archives & binaries ───────────────────────────────────────────────────────
+*.zip
+*.jar
+*.war
+
+# ── Temp / scratch files ──────────────────────────────────────────────────────
+temp/
+temp_todo.txt
+*.txt
+*.java_old
+
+# ── SQL test/dev scripts ──────────────────────────────────────────────────────
+TEST_DATA.sql
+VERIFICATION_QUERIES.sql
+
+# ── Session / run analysis docs (not part of codebase) ───────────────────────
+ALERT_VALIDATION_REPORT_*.md
+FULL_ALERT_VALIDATION_*.md
+POST_RUN_ANALYSIS_*.md
+PRE_50K_FIXES.md
+RESTRICTED_LXNX_FP_REPORT.md
+SINGLE_TOKEN_GAP_INVESTIGATION.md
+LXNX-COUNTRY-INVESTIGATION.md
+OPTIMIZATION-LOG.md
+JUNIOR_DEV_COMPLAINT_INVESTIGATION.md
+SESSION_STATE_*.md
+LAST_STATSUS.md
+ASSESSMENT-MVP.md
+TEST_PLAN.md
+CLAUDE_WEB_PROMPT.md
+HNB-COMPARISON.md
+potential_v1_hnb_comparison.md
+
+# ── Stray compiled output in root ─────────────────────────────────────────────
+/com/
+
+# ── Archives inside src/ ──────────────────────────────────────────────────────
+src/src.tar.xz
+*.tar.xz
+*.tar.gz
+
+# ── Claude Code context ───────────────────────────────────────────────────────
+.claude/
+
+# ── Spring Boot generated ─────────────────────────────────────────────────────
+HELP.md
+
+# ── IDE — NetBeans ────────────────────────────────────────────────────────────
+nbactions.xml
+nb-configuration.xml
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+
+# ── IDE — IntelliJ IDEA ───────────────────────────────────────────────────────
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# ── IDE — Eclipse / STS ───────────────────────────────────────────────────────
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# ── IDE — VS Code ─────────────────────────────────────────────────────────────
+.vscode/
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

@@ -1,0 +1,43 @@
+## Minimal config for @WebMvcTest and other slice tests.
+## Suppresses datasource / JPA / Solr auto-configuration so the web slice
+## can start without a real database or ZooKeeper.
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
+  mail:
+    host: localhost
+    port: 25
+
+application:
+  config:
+    solr:
+      zk-hosts: "localhost:2181"
+      connection-timeout: 1000
+      socket-timeout: 1000
+      collections:
+        individual: "fiu_individual_core"
+        org: "fiu_org_core"
+        watch: "local_watch_core"
+        un: "un_consolidated_core"
+        lxnx: "lxnx_entities_core"
+    screening:
+      chunk-buffer-capacity: 10
+      scoring-buffer-capacity: 100
+      alert-buffer-capacity: 100
+      alert-batch-size: 50
+      alert-batch-timeout-ms: 5000
+      batch-size: 100
+      score-threshold: 80.0
+      max-concurrent-chunks: 2
+      metrics-interval-ms: 10000
+      retention-years: 7
+      archival-cron: "0 0 2 1 * *"
+    match-rate:
+      endpoints:
+        - http://localhost:5000
+      connect-timeout: 1000
+      read-timeout: 1000
+      health-check-interval: 60000
