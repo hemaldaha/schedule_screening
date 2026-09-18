@@ -58,6 +58,9 @@ src/src.tar.xz
 # ── Spring Boot generated ─────────────────────────────────────────────────────
 HELP.md
 
+# ── Claude Code dev files ─────────────────────────────────────────────────────
+CLAUDE*.md
+
 # ── IDE — NetBeans ────────────────────────────────────────────────────────────
 nbactions.xml
 nb-configuration.xml
