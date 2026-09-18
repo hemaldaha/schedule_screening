@@ -61,6 +61,10 @@ HELP.md
 # ── Claude Code dev files ─────────────────────────────────────────────────────
 CLAUDE*.md
 
+# ── Internal project docs (not for repo) ─────────────────────────────────────
+TYPO-FIXES.md
+ALERT_SERVICE_SPEC.md
+
 # ── IDE — NetBeans ────────────────────────────────────────────────────────────
 nbactions.xml
 nb-configuration.xml
