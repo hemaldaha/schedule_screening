@@ -1,0 +1,111 @@
+## YAML Template.
+---
+debug: true
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # Primary DB (schedule-screening)
+    postgres:
+      jdbc-url: jdbc:postgresql://localhost:5434/screening-test
+      username: postgres
+      password: ${DB_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      pool-name: pgsqlPool
+    
+    # Secondary DB (oracle_db simulation)
+    oracle:
+      jdbc-url: jdbc:oracle:thin:@//10.17.24.24:1521/nsuredmsuppt.hnblz1dbsubnet.hnblz1vcn.oraclevcn.com
+      username: HNBATRA
+      password: ${ORACLE_PASSWORD}
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      pool-name: oraclePool
+      maximum-pool-size: 20 # Higher pool size for Virtual Thread processing
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your-email@gmail.com
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    
+  threads:
+    virtual:
+      enabled: true
+
+logging:
+  file:
+    name: logs/screening.log
+  logback:
+    rollingpolicy:
+      max-file-size: 500MB
+  level:
+    com.kpmg.aml.screening: INFO
+    com.kpmg.aml.screening.util.SriLankanNicUtil: WARN
+    org:
+      hibernate:
+        SQL: ERROR
+        orm:
+          jdbc:
+            bind: ERROR
+        type:
+          descriptor:
+            sql: ERROR
+
+
+application:
+  config:
+    solr:      
+      zk-hosts: "192.168.30.32:2181"
+      connection-timeout: 10000
+      socket-timeout: 20000
+      # defult-collection: "fiu_individual_core"  <-- check this
+      # List them here so you can inject them into your services
+      collections:
+        individual: "fiu_individual_core"
+        org: "fiu_org_core"
+        watch: "local_watch_core"
+        un: "un_consolidated_core"      
+    screening:
+      chunk-buffer-capacity: 10
+      scoring-buffer-capacity: 100
+      alert-buffer-capacity: 100
+      alert-batch-size: 50
+      alert-batch-timeout-ms: 5000
+      batch-size: 1000
+      score-threshold: 35.0
+      max-concurrent-chunks: 5
+    # Python match rating configs      
+    match-rate:
+      endpoints:
+        - http://192.168.30.32:5000
+        - http://192.168.30.32:5001
+        - http://192.168.30.32:5002
+      connect-timeout: 3000
+      read-timeout: 10000
+      health-check-interval: 1500000
+
+app:
+  mail:
+    from-email: your-email@gmail.com
+    from-name: KTMS System
+    receiver-emails:
+      - recipient1@example.com
+      - recipient2@example.com
+
+      # solr-alqaida-url: http://localhost:8983/solr/alqaida_test
+      # solr-taliban-url: http://localhost:8983/solr/taliban_test
+      # olr-refi-full-url: http://localhost:8983/solr/refinitiv_full
+      # solr-refi-upd-url: http://localhost:8983/solr/refinitiv_upd
